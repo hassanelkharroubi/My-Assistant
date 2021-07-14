@@ -74,7 +74,7 @@ mContext = context;
                         eval=eval.replace(',','.');
                        
 
-                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,aeroports,9));
+                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,aeroports,9,1000,4));
                         //! send to to searchActivity
 
                     }
