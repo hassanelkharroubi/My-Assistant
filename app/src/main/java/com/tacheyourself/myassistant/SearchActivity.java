@@ -1,5 +1,6 @@
 package com.tacheyourself.myassistant;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.speech.RecognizerIntent;
@@ -10,10 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.tacheyourself.myassistant.adapter.HotelAdapter;
@@ -33,6 +37,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private HotelAdapter adapter;
     private ListView mListView;
     private List<Hotel> mHotelList;
+    private List<Hotel> mHotelListCopy;
 
 
     private Button nonBtn,ouiBtn;
@@ -54,6 +59,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         filter.setVisibility(View.GONE);
 
         mHotelList=new ArrayList<>();
+        mHotelListCopy=new ArrayList<>();
 
         //remplissage de liste
         mListView=findViewById(R.id.liste);
@@ -89,6 +95,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if(v.getId()==ouiBtn.getId()){
 
             //show dialogbox for filtering data
+            enableFiltering();
 
 
             return;
@@ -98,6 +105,81 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
     }
+
+    //for choosing filter
+
+    private void enableFiltering(){
+
+        final Dialog dialog = new Dialog(this);
+
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.hotel_filtre);
+
+        EditText minPriceText =  findViewById(R.id.minPrice);
+        EditText maxPriceText =  findViewById(R.id.maxPrice);
+        RatingBar ratingBar=findViewById(R.id.ratingBar);
+        ratingBar.setNumStars(5);
+        ratingBar.setRating(1);
+        ratingBar.setStepSize(1f);
+        ratingBar.setMax(5);
+
+        Button appliquerBtn=findViewById(R.id.appliquer);
+        Button annulerBtn=findViewById(R.id.annuler);
+
+
+
+
+        annulerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                //hide filter option
+                //filter.setVisibility(View.GONE);
+            }
+        });
+
+        appliquerBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                int minPrice=Integer.parseInt( minPriceText.getText().toString());
+                int maxPrice=Integer.parseInt( maxPriceText.getText().toString());
+                int numStars= ratingBar.getNumStars();
+                //filtering data
+                appliquerFiltre(minPrice,maxPrice,numStars);
+
+
+
+
+
+
+            }
+        });
+
+
+        dialog.show();
+
+    }
+
+    private void appliquerFiltre(int minPrice, int maxPrice, int numStars) {
+
+        List<Hotel> filtredList=new ArrayList<Hotel>();
+
+        for (int i=0;i<mHotelList.size();i++){
+            if(   (mHotelList.get(i).getPrice()>=minPrice || mHotelList.get(i).getPrice()<=maxPrice) && mHotelList.get(i).getStars()>=numStars){
+                filtredList.add(filtredList.get(i));
+            }
+        }
+        mHotelListCopy.addAll(mHotelList);
+        //remove all hotels from our liste to add new filter hotels
+        mHotelList.clear();
+        mHotelList.addAll(filtredList);
+        //show filtered data
+        adapter.notifyDataSetChanged();
+
+    }
+
 
     private void speak(){
 

@@ -10,17 +10,37 @@ public class Hotel {
  private String mLieuxApprox;
  private String mAearportProche;
  private float mEvaluation;
+ private float mPrice;
+ private int mStars;
 
  public Hotel() {
  }
 
- public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, String aearportProche, float evaluation) {
+ public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, String aearportProche, float evaluation,float price,int stars) {
   mNom = nom;
   mAdresse = adresse;
   mPointFort = pointFort;
   mLieuxApprox = lieuxApprox;
   mAearportProche = aearportProche;
   mEvaluation = evaluation;
+  mPrice=price;
+  mStars=stars;
+ }
+
+ public float getPrice() {
+  return mPrice;
+ }
+
+ public void setPrice(float price) {
+  mPrice = price;
+ }
+
+ public int getStars() {
+  return mStars;
+ }
+
+ public void setStars(int stars) {
+  mStars = stars;
  }
 
  public String getNom() {
