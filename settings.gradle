@@ -1,0 +1,2 @@
+rootProject.name = "my Assistant"
+include ':app'
