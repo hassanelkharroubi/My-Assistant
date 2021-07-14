@@ -1,6 +1,7 @@
 package com.tacheyourself.myassistant;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.speech.RecognizerIntent;
 import android.speech.RecognizerResultsIntent;
 import android.support.annotation.Nullable;
@@ -9,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,12 +34,24 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private ListView mListView;
     private List<Hotel> mHotelList;
 
+
+    private Button nonBtn,ouiBtn;
+    private LinearLayout filter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
         imageView=findViewById(R.id.imageView);
+
+        nonBtn=findViewById(R.id.non);
+        ouiBtn=findViewById(R.id.oui);
+        nonBtn.setOnClickListener(this);
+        ouiBtn.setOnClickListener(this);
+
+
+        filter=findViewById(R.id.filtre);
+        filter.setVisibility(View.GONE);
 
         mHotelList=new ArrayList<>();
 
@@ -64,7 +79,23 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if(v.getId()==imageView.getId()){
             //! do our work here
             speak();
+            return;
         }
+
+        if(v.getId()==nonBtn.getId()){
+            //! handle event of non btn
+            return;
+        }
+        if(v.getId()==ouiBtn.getId()){
+
+            //show dialogbox for filtering data
+
+
+            return;
+        }
+
+
+
 
     }
 
@@ -107,7 +138,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
             mHotelList.addAll(liste);
             Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
-            adapter.notifyDataSetChanged(); 
+            adapter.notifyDataSetChanged();
+            //ajouter mp3 son
+            MediaPlayer.create(this,R.raw.sound).start();
+            //afficher les btns de filtres
+            filter.setVisibility(View.VISIBLE);
 
 
         }
