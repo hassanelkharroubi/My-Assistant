@@ -8,6 +8,8 @@
     android:padding="12dp"
     tools:context=".SearchActivity">
 
+
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -34,7 +36,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="non" />
+
     </LinearLayout>
+    <Button
+        android:id="@+id/supprimerFiltre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Supprimer le filtre" />
 
     <ListView
         android:id="@+id/liste"

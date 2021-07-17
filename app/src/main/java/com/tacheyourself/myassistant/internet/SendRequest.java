@@ -15,6 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tacheyourself.myassistant.DataListener;
 import com.tacheyourself.myassistant.model.Hotel;
+import com.tacheyourself.myassistant.utils.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,8 +43,8 @@ mContext = context;
 
     public void getHotels(String query) {
         // url to post our data
-        String url = "https://readbeforespeak.000webhostapp.com/fst.php?q="+query;
-        Log.d(TAG,query);
+        String url = Util.URL+"q="+query+"&action="+Util.ACTION[0];
+        Log.d(TAG,url);
 
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
@@ -54,7 +55,6 @@ mContext = context;
                 Log.d(TAG,response);
                 List<Hotel> hotelList=new ArrayList<>();
 
-
                 try {
 
                     JSONArray jsonArray=  new JSONArray(response);
@@ -64,17 +64,53 @@ mContext = context;
                     for (int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject=jsonArray.getJSONObject(i);
 
-                        String name=jsonObject.getString("nom de l'hôtel");
+                        String name=jsonObject.getString("nom");
                         String adresse=jsonObject.getString("adresse");
-                        String pointsForts=jsonObject.getString("pointsForts");
-                        String lieuxApp=jsonObject.getString("lieux à proximité");
-                        String aeroports=jsonObject.getString("aéroports les plus proches");
+                        String pointsForts=jsonObject.getString("points_forts");
+                        String lieuxApp=jsonObject.getString("lieux_proximite");
+                        //String aeroports=jsonObject.getString("aéroports les plus proches");
+                        int prix=jsonObject.getInt("prix");
 
-                        String eval=jsonObject.getString("évaluation");
-                        eval=eval.replace(',','.');
+
+                        //by default give 2
+                        int stars;
+                        float evaluation;
+
+                        try{
+
+
+                            String etoile=jsonObject.getString("etoile");
+                            String eval=jsonObject.getString("evaluation");
+                            try{
+                                stars=Integer.parseInt(etoile);
+                                evaluation=Float.parseFloat(eval);
+
+
+                            }catch(NumberFormatException e){
+
+                                stars=2;
+                                evaluation=2.5f;
+
+                            }
+
+
+                        }catch (JSONException e){
+
+                            //by default give 2
+                            stars=2;
+                            evaluation=2.5f;
+
+                        }
+
+                        String etoile=jsonObject.getString("etoile");
+                        String eval=jsonObject.getString("evaluation");
+                        //by default give 2
+
+                        Log.d(TAG,etoile+" eval "+eval);
+
                        
 
-                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,aeroports,9,1000,4));
+                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,null,evaluation,prix,stars));
                         //! send to to searchActivity
 
                     }

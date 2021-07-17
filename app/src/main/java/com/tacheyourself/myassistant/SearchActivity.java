@@ -38,9 +38,13 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private ListView mListView;
     private List<Hotel> mHotelList;
     private List<Hotel> mHotelListCopy;
+    //va nous servir pour le filtrage de donnees
+    private List<Hotel> filtredList;
 
 
-    private Button nonBtn,ouiBtn;
+    private Button nonBtn,ouiBtn,supprimerFiltreBtn;
+
+
     private LinearLayout filter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +53,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         imageView=findViewById(R.id.imageView);
 
+
         nonBtn=findViewById(R.id.non);
         ouiBtn=findViewById(R.id.oui);
+        supprimerFiltreBtn=findViewById(R.id.supprimerFiltre);
+        supprimerFiltreBtn.setVisibility(View.GONE);
         nonBtn.setOnClickListener(this);
         ouiBtn.setOnClickListener(this);
+        supprimerFiltreBtn.setOnClickListener(this);
 
 
         filter=findViewById(R.id.filtre);
@@ -60,6 +68,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         mHotelList=new ArrayList<>();
         mHotelListCopy=new ArrayList<>();
+        filtredList=new ArrayList<Hotel>();
 
         //remplissage de liste
         mListView=findViewById(R.id.liste);
@@ -99,6 +108,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
             return;
+        } if(v.getId()==supprimerFiltreBtn.getId()){
+
+            //show dialogbox for filtering data
+            mHotelList.clear();
+            mHotelList.addAll(mHotelListCopy);
+            adapter.notifyDataSetChanged();
+            supprimerFiltreBtn.setVisibility(View.GONE);
+
+
+            return;
         }
 
 
@@ -110,21 +129,21 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private void enableFiltering(){
 
+         Button annulerBtn;
+         Button appliquerBtn;
+
         final Dialog dialog = new Dialog(this);
 
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.hotel_filtre);
 
-        EditText minPriceText =  findViewById(R.id.minPrice);
-        EditText maxPriceText =  findViewById(R.id.maxPrice);
-        RatingBar ratingBar=findViewById(R.id.ratingBar);
-        ratingBar.setNumStars(5);
-        ratingBar.setRating(1);
+        EditText minPriceText =  dialog.findViewById(R.id.minPrice);
+        EditText maxPriceText =  dialog.findViewById(R.id.maxPrice);
+        RatingBar ratingBar   =  dialog.findViewById(R.id.ratingBar);
         ratingBar.setStepSize(1f);
-        ratingBar.setMax(5);
 
-        Button appliquerBtn=findViewById(R.id.appliquer);
-        Button annulerBtn=findViewById(R.id.annuler);
+        appliquerBtn=dialog.findViewById(R.id.appliquer);
+         annulerBtn=dialog.findViewById(R.id.annuler);
 
 
 
@@ -133,6 +152,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
+                Log.d(TAG,"vous avez annuler le filtre");
                 //hide filter option
                 //filter.setVisibility(View.GONE);
             }
@@ -143,11 +164,33 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
 
-                int minPrice=Integer.parseInt( minPriceText.getText().toString());
-                int maxPrice=Integer.parseInt( maxPriceText.getText().toString());
-                int numStars= ratingBar.getNumStars();
+                int minPrice=-1;
+                int maxPrice=-1;
+                float numStars;
+
+                String minPriceString = minPriceText.getText().toString();
+                String maxPriceString = maxPriceText.getText().toString();
+
+
+
+                try {
+                    minPrice=Integer.parseInt(minPriceString);
+                    maxPrice=Integer.parseInt(maxPriceString);
+
+                }catch (NumberFormatException ignored){
+
+                }
+
+
+                 numStars= ratingBar.getRating();
+
+                Log.d(TAG,"min prive "+minPrice+" max price "+maxPrice+" num stars "+numStars);
                 //filtering data
                 appliquerFiltre(minPrice,maxPrice,numStars);
+
+                supprimerFiltreBtn.setVisibility(View.VISIBLE);
+
+                dialog.dismiss();
 
 
 
@@ -162,18 +205,82 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void appliquerFiltre(int minPrice, int maxPrice, int numStars) {
+    private void appliquerFiltre(int minPrice, int maxPrice, float numStars) {
 
-        List<Hotel> filtredList=new ArrayList<Hotel>();
+
+
+        if(filtredList.size()>0)
+            filtredList.clear();
+
+
+        Log.d(TAG,"le nombre de HotelListe est "+mHotelList.size());
+
 
         for (int i=0;i<mHotelList.size();i++){
-            if(   (mHotelList.get(i).getPrice()>=minPrice || mHotelList.get(i).getPrice()<=maxPrice) && mHotelList.get(i).getStars()>=numStars){
-                filtredList.add(filtredList.get(i));
+
+
+            if(minPrice!=-1){
+                if(mHotelList.get(i).getPrice()>=minPrice)
+                {
+                    if(maxPrice!=-1){
+                        if(mHotelList.get(i).getPrice()<=maxPrice){
+                            if(numStars!=0){
+
+                                if(mHotelList.get(i).getStars()==numStars){
+                                    filtredList.add(mHotelList.get(i));
+                                }
+
+                            }else
+                                filtredList.add(mHotelList.get(i));
+
+                        }
+                    }else{
+                        if(numStars!=0){
+
+                            if(mHotelList.get(i).getStars()==numStars){
+                                filtredList.add(mHotelList.get(i));
+                            }
+
+                        }else
+                            filtredList.add(mHotelList.get(i));
+                    }
+
+                }
+
             }
+            else{
+                if(maxPrice!=-1){
+                    if(mHotelList.get(i).getPrice()<=maxPrice){
+                        if(numStars!=0){
+
+                            if(mHotelList.get(i).getStars()==numStars){
+                                filtredList.add(mHotelList.get(i));
+                            }
+
+                        }else
+                            filtredList.add(mHotelList.get(i));
+
+                    }
+                }
+                else{
+                    if(numStars!=0){
+
+                        if(mHotelList.get(i).getStars()==numStars){
+                            filtredList.add(mHotelList.get(i));
+                        }
+
+                    }else
+                        filtredList.add(mHotelList.get(i));
+                }
+
+            }
+
         }
         mHotelListCopy.addAll(mHotelList);
         //remove all hotels from our liste to add new filter hotels
         mHotelList.clear();
+
+        Log.d(TAG,"le nb de hotels de filtred liste est "+filtredList.size());
         mHotelList.addAll(filtredList);
         //show filtered data
         adapter.notifyDataSetChanged();
@@ -199,6 +306,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
 
+
+
+
+        //!remove this statement
+        new SendRequest(this).getHotels("je cherche la piscine dans Marrakech");
+
         if(requestCode==code && resultCode==RESULT_OK){
 
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -218,13 +331,20 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if("hotel".equals(type)) {
 
 
-            mHotelList.addAll(liste);
-            Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
-            adapter.notifyDataSetChanged();
-            //ajouter mp3 son
-            MediaPlayer.create(this,R.raw.sound).start();
-            //afficher les btns de filtres
-            filter.setVisibility(View.VISIBLE);
+            if(liste.size()>0){
+                mHotelList.addAll(liste);
+                // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
+                adapter.notifyDataSetChanged();
+                //ajouter mp3 son
+                MediaPlayer.create(this,R.raw.sound).start();
+                //afficher les btns de filtres
+                filter.setVisibility(View.VISIBLE);
+
+            }
+            else{
+                Toast.makeText(this, "Pas de donnees", Toast.LENGTH_SHORT).show();
+            }
+
 
 
         }
