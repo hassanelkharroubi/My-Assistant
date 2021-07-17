@@ -1,9 +1,5 @@
 package com.tacheyourself.myassistant.model;
-/*
- **    *** my Assistant ***
- **   Created by EL KHARROUBI HASSAN
- **   At Saturday July 2021 18H 20MIN
- */
+
 
 
 public class Transport {

@@ -1,9 +1,4 @@
 package com.tacheyourself.myassistant;
-/*
- **    *** my Assistant ***
- **   Created by EL KHARROUBI HASSAN
- **   At Friday July 2021 12H 34MIN
- */
 
 
 import com.tacheyourself.myassistant.model.Hotel;
