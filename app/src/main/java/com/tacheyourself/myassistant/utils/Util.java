@@ -9,5 +9,5 @@ package com.tacheyourself.myassistant.utils;
 public class Util {
 
     public static final String URL = "https://pfemyassistant.000webhostapp.com/fst.php?";
-    public static final String ACTION[] = {"etablissement","restaurant"};
+    public static final String ACTION[] = {"etablissement","restaurant","site","transport"};
 }

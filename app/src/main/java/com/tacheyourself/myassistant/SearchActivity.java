@@ -3,26 +3,33 @@ package com.tacheyourself.myassistant;
 import android.app.Dialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.speech.RecognizerIntent;
-import android.speech.RecognizerResultsIntent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.tacheyourself.myassistant.adapter.HotelAdapter;
+import com.tacheyourself.myassistant.adapter.RestaurantAdapter;
+import com.tacheyourself.myassistant.adapter.SiteAdapter;
+import com.tacheyourself.myassistant.adapter.TransportAdapter;
 import com.tacheyourself.myassistant.internet.SendRequest;
 import com.tacheyourself.myassistant.model.Hotel;
+import com.tacheyourself.myassistant.model.Restaurant;
+import com.tacheyourself.myassistant.model.Site;
+import com.tacheyourself.myassistant.model.Transport;
+import com.tacheyourself.myassistant.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +53,44 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
     private LinearLayout filter;
+    private ProgressBar mProgressBar;
+
+
+    //for restaurant
+
+    private RestaurantAdapter mRestaurantAdapter;
+    private List<Restaurant> mRestaurantList;
+    private List<Restaurant> mFilteredRestaurants;
+    private List<Restaurant> mRestaurantListCopy;
+
+    //pour  site
+
+    private SiteAdapter mSiteAdapter;
+    private List<Site> mSitelist;
+    private List<Site> mFilteredSitelist;
+    private List<Site> mSiteListCopy;
+
+    //pour transport
+    private TransportAdapter mTransportAdapter;
+    private List<Transport> mTransportList;
+    private List<Transport> mFilteredTransportList;
+    private List<Transport> mTransportListCopy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        Intent intent=getIntent();
+
+
+        if(intent.hasExtra("name")){
+            name=intent.getStringExtra("name");
+            Log.d(TAG,name);
+        }
+
+
+
         imageView=findViewById(R.id.imageView);
-
-
         nonBtn=findViewById(R.id.non);
         ouiBtn=findViewById(R.id.oui);
         supprimerFiltreBtn=findViewById(R.id.supprimerFiltre);
@@ -61,29 +98,59 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         nonBtn.setOnClickListener(this);
         ouiBtn.setOnClickListener(this);
         supprimerFiltreBtn.setOnClickListener(this);
-
-
         filter=findViewById(R.id.filtre);
         filter.setVisibility(View.GONE);
-
-        mHotelList=new ArrayList<>();
-        mHotelListCopy=new ArrayList<>();
-        filtredList=new ArrayList<Hotel>();
-
-        //remplissage de liste
-        mListView=findViewById(R.id.liste);
-        adapter=new HotelAdapter(this,R.layout.hotel_item,mHotelList);
-        mListView.setAdapter(adapter);
-
         imageView.setOnClickListener(this);
+        mListView=findViewById(R.id.liste);
+        mProgressBar=findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.GONE);
 
-        Intent intent=getIntent();
 
-        if(intent.hasExtra("name")){
-            name=intent.getStringExtra("name");
-            Log.d(TAG,name);
-            //! il faut supprimer
-            //new SendRequest(this).getHotels("je cherche un piscine");
+
+        Log.d(TAG,name);
+        if(name.equals("etablissement")) {
+
+
+            mHotelList = new ArrayList<>();
+            mHotelListCopy = new ArrayList<>();
+            filtredList = new ArrayList<>();
+            adapter = new HotelAdapter(this, R.layout.hotel_item, mHotelList);
+            mListView.setAdapter(adapter);
+        }
+
+        if(name.equals("site")) {
+
+            mSitelist = new ArrayList<>();
+            mSiteListCopy = new ArrayList<>();
+            mFilteredSitelist = new ArrayList<>();
+            mSiteAdapter = new SiteAdapter(this, R.layout.site_item, mSitelist);
+            mListView.setAdapter(mSiteAdapter);
+        }
+
+
+        if(name.equals("transport")) {
+
+            mTransportList = new ArrayList<>();
+            mTransportListCopy = new ArrayList<>();
+            mFilteredTransportList = new ArrayList<>();
+            mTransportAdapter = new TransportAdapter(this, R.layout.transport_item, mTransportList);
+            mListView.setAdapter(mTransportAdapter);
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    showTransportMap(position);
+                }
+            });
+        }
+
+
+        if(name.equals("restaurant")) {
+
+            mRestaurantList = new ArrayList<>();
+            mRestaurantListCopy = new ArrayList<>();
+            mFilteredRestaurants = new ArrayList<>();
+            mRestaurantAdapter = new RestaurantAdapter(this, R.layout.restaurant_item, mRestaurantList);
+            mListView.setAdapter(mRestaurantAdapter);
         }
 
     }
@@ -104,16 +171,32 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         if(v.getId()==ouiBtn.getId()){
 
             //show dialogbox for filtering data
-            enableFiltering();
+
+            if(name.equals(Util.ACTION[1])){
+                enableFilteringOnRestaurant();
+            }
+            if(name.equals(Util.ACTION[0]))
+                enableFiltering();
 
 
             return;
         } if(v.getId()==supprimerFiltreBtn.getId()){
 
             //show dialogbox for filtering data
-            mHotelList.clear();
-            mHotelList.addAll(mHotelListCopy);
-            adapter.notifyDataSetChanged();
+            if(name.equals(Util.ACTION[0])){
+                mHotelList.clear();
+                mHotelList.addAll(mHotelListCopy);
+                adapter.notifyDataSetChanged();
+
+            }
+
+            if(name.equals(Util.ACTION[1])){
+                mRestaurantList.clear();
+                mRestaurantList.addAll(mRestaurantListCopy);
+                mRestaurantAdapter.notifyDataSetChanged();
+
+            }
+
             supprimerFiltreBtn.setVisibility(View.GONE);
 
 
@@ -139,7 +222,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         EditText minPriceText =  dialog.findViewById(R.id.minPrice);
         EditText maxPriceText =  dialog.findViewById(R.id.maxPrice);
-        RatingBar ratingBar   =  dialog.findViewById(R.id.ratingBar);
+        RatingBar ratingBar   =  dialog.findViewById(R.id.ratingBar_restaurant);
         ratingBar.setStepSize(1f);
 
         appliquerBtn=dialog.findViewById(R.id.appliquer);
@@ -202,6 +285,95 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
         dialog.show();
+
+    }
+
+
+
+    private void enableFilteringOnRestaurant(){
+
+        Button annulerBtn;
+        Button appliquerBtn;
+
+        final Dialog dialog = new Dialog(this);
+
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.hotel_filtre_restaurant);
+
+
+        RatingBar ratingBar   =  dialog.findViewById(R.id.ratingBar_restaurant);
+        ratingBar.setStepSize(0.5f);
+
+        appliquerBtn=dialog.findViewById(R.id.appliquer);
+        annulerBtn=dialog.findViewById(R.id.annuler);
+
+
+
+
+        annulerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                Log.d(TAG,"vous avez annuler le filtre");
+                //hide filter option
+                //filter.setVisibility(View.GONE);
+            }
+        });
+
+        appliquerBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                int minPrice=-1;
+                int maxPrice=-1;
+                float numStars;
+
+
+
+                numStars= ratingBar.getRating();
+
+                Log.d(TAG,"min prive "+minPrice+" max price "+maxPrice+" num stars "+numStars);
+                //filtering data
+                appliquerFiltreRestaurant(numStars);
+
+                supprimerFiltreBtn.setVisibility(View.VISIBLE);
+
+                dialog.dismiss();
+
+            }
+        });
+
+
+        dialog.show();
+
+    }
+
+    private void appliquerFiltreRestaurant(float numStars) {
+
+
+
+
+
+        if(numStars==0){
+            Toast.makeText(this, "pas de filtre choisi", Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+        mFilteredRestaurants.clear();
+        for (int i=0;i<mRestaurantList.size();i++){
+
+            if(mRestaurantList.get(i).getRevaluation()==numStars){
+                mFilteredRestaurants.add(mRestaurantList.get(i));
+
+            }
+        }
+
+        mRestaurantListCopy.addAll(mRestaurantList);
+        mRestaurantList.clear();
+        mRestaurantList.addAll(mFilteredRestaurants);
+        mRestaurantAdapter.notifyDataSetChanged();
 
     }
 
@@ -306,11 +478,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
 
-
-
-
         //!remove this statement
-        new SendRequest(this).getHotels("je cherche la piscine dans Marrakech");
+        Log.d(TAG,"try to het data");
+        mProgressBar.setVisibility(View.VISIBLE);
+
 
         if(requestCode==code && resultCode==RESULT_OK){
 
@@ -318,7 +489,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             //get data from our tables
             String spokenText = results.get(0);
             //! il faut supprimer les commenatires
-            new SendRequest(this).getHotels(spokenText);
+            new SendRequest(this).getInfo(spokenText,name);
             Log.d(TAG,spokenText);
 
         }
@@ -326,11 +497,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void sendData(List<Hotel> liste,String type) {
-
-        if("hotel".equals(type)) {
+    public void sendHotel(List<Hotel> liste, String type) {
 
 
+        mProgressBar.setVisibility(View.GONE);
             if(liste.size()>0){
                 mHotelList.addAll(liste);
                 // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
@@ -347,10 +517,80 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
+
+    }
+
+    @Override
+    public void sendSite(List<Site> liste, String type) {
+
+        mProgressBar.setVisibility(View.GONE);
+        if(liste.size()>0){
+            mSitelist.addAll(liste);
+            // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
+            mSiteAdapter.notifyDataSetChanged();
+
+        }
+        else{
+            Toast.makeText(this, "Pas de donnees", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void sendRestaurant(List<Restaurant> liste, String type) {
+        mProgressBar.setVisibility(View.GONE);
+        if(liste.size()>0){
+            mRestaurantList.addAll(liste);
+            // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
+            mRestaurantAdapter.notifyDataSetChanged();
+            //ajouter mp3 son
+            MediaPlayer.create(this,R.raw.sound).start();
+            //afficher les btns de filtres
+            filter.setVisibility(View.VISIBLE);
+
+        }
+        else{
+            Toast.makeText(this, "Pas de donnees", Toast.LENGTH_SHORT).show();
         }
 
 
 
+    }
+
+    @Override
+    public void sendTransport(List<Transport> liste, String type) {
+        mProgressBar.setVisibility(View.GONE);
+
+        if(liste.size()>0){
+            mTransportList.addAll(liste);
+            // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
+            mTransportAdapter.notifyDataSetChanged();
+
+        }
+        else{
+            Toast.makeText(this, "Pas de donnees", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    private void showTransportMap(int position){
+        // Create a Uri from an intent string. Use the result to create an Intent.
+
+        Log.d(TAG,mTransportList.get(position).getType()+"  type     hhhhhhh");
+        Uri gmmIntentUri = Uri.parse("geo:31.6347485,-8.0778934?q="+mTransportList.get(position).getType());
+
+// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+
+// Make the Intent explicit by setting the Google Maps package
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            // Attempt to start an activity that can handle the Intent
+            startActivity(mapIntent);
+
+        }
+        else{
+            Toast.makeText(this, "Veuillez installer google maps", Toast.LENGTH_SHORT).show();
+        }
 
 
     }

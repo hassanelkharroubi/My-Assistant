@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             Log.d(TAG," hotel is clicked ");
 
-            startSearchActivity("hotel");
+            startSearchActivity("etablissement");
             return;
         }
 

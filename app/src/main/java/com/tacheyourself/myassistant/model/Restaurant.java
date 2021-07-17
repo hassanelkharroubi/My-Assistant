@@ -9,16 +9,26 @@ public class Restaurant {
     private String rHoraire;
     private String rRepas;
     private String rFonctionalite;
+    private float revaluation;
+
+    public float getRevaluation() {
+        return revaluation;
+    }
+
+    public void setRevaluation(float revaluation) {
+        this.revaluation = revaluation;
+    }
 
     public Restaurant(){
 
     }
-    public Restaurant(String nom, String adresse, String horaire, String repas, String fonctionalité) {
+    public Restaurant(String nom, String adresse, String horaire, String repas, String fonctionalité, float evaluation) {
         rNom = nom;
         rAdresse = adresse;
         rHoraire = horaire;
         rRepas = repas;
         rFonctionalite = fonctionalité;
+        revaluation=evaluation;
     }
     public String getNom() {
         return rNom;

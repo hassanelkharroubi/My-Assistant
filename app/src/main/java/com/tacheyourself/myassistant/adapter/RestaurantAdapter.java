@@ -38,14 +38,21 @@ public class RestaurantAdapter extends ArrayAdapter<Restaurant> {
             convertView= LayoutInflater.from(rContext).inflate(rResource,null);
         }
 
-        TextView hotelname= convertView.findViewById(R.id.nomHotel);
+        TextView hotelname= convertView.findViewById(R.id.nomrestau);
 
-        TextView adresse= convertView.findViewById(R.id.adresse);
+        TextView adresse= convertView.findViewById(R.id.radresse);
+        TextView rhoraire= convertView.findViewById(R.id.rhoraire);
+        TextView repas= convertView.findViewById(R.id.repas);
+        TextView rfonction= convertView.findViewById(R.id.rfonction);
 
         Log.d(TAG,rRestaurant.get(position).getNom());
         hotelname.setText(rRestaurant.get(position).getNom());
 
         adresse.setText(rRestaurant.get(position).getAdresse());
+        rhoraire.setText(rRestaurant.get(position).getHoraire());
+        repas.setText(rRestaurant.get(position).getRepas());
+        rfonction.setText(rRestaurant.get(position).getFonctionalite());
+
 
         return convertView;
     }
