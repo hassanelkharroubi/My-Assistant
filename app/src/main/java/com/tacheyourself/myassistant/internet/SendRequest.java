@@ -1,6 +1,8 @@
 package com.tacheyourself.myassistant.internet;
 
-
+/**
+ * created by Youssef Talambouti on
+ */
 
 import android.content.Context;
 
