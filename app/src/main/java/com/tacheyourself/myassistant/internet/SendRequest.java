@@ -73,7 +73,6 @@ mContext = context;
                         String adresse=jsonObject.getString("adresse");
                         String pointsForts=jsonObject.getString("points_forts");
                         String lieuxApp=jsonObject.getString("lieux_proximite");
-                        //String aeroports=jsonObject.getString("aéroports les plus proches");
                         int prix=jsonObject.getInt("prix");
 
                         //by default give 2
@@ -109,7 +108,7 @@ mContext = context;
                         //by default give 2
                         Log.d(TAG,etoile+" eval "+eval);
 
-                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,null,evaluation,prix,stars));
+                        hotelList.add(new Hotel(name,adresse,pointsForts,lieuxApp,evaluation,prix,stars));
                         //! send to to searchActivity
 
                     }

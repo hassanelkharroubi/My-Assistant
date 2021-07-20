@@ -40,11 +40,29 @@ public class HotelAdapter  extends ArrayAdapter<Hotel> {
         TextView hotelname= convertView.findViewById(R.id.nomHotel);
 
         TextView adresse= convertView.findViewById(R.id.adresse);
+        TextView prix= convertView.findViewById(R.id.mPrix);
+
+        TextView evaluation= convertView.findViewById(R.id.mEvaluation);
+
+        TextView stars= convertView.findViewById(R.id.mStars);
+        TextView point_fort=convertView.findViewById(R.id.mPoint_fort);
+        TextView lieu=convertView.findViewById(R.id.mLieuxApprox);
+
 
         Log.d(TAG,mHotels.get(position).getNom());
         hotelname.setText(mHotels.get(position).getNom());
 
         adresse.setText(mHotels.get(position).getAdresse());
+
+        //prix.setText((int) mHotels.get(position).getPrice());
+
+        //evaluation.setText((int) mHotels.get(position).getEvaluation());
+        //stars.setText(mHotels.get(position).getStars());
+
+        point_fort.setText(mHotels.get(position).getPointFort());
+        //lieu.setText(mHotels.get(position).getLieuxApprox());
+
+
 
         return convertView;
     }

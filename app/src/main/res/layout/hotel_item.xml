@@ -20,4 +20,16 @@
         android:layout_marginTop="4dp"
         android:padding="4dp"
         android:text="TextView" />
+
+
+    <TextView
+        android:id="@+id/mPoint_fort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="4dp"
+        android:text="TextView" />
+
+
+
 </LinearLayout>

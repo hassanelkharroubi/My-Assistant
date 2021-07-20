@@ -8,7 +8,6 @@ public class Hotel {
  private String mAdresse;
  private String mPointFort;
  private String mLieuxApprox;
- private String mAearportProche;
  private float mEvaluation;
  private float mPrice;
  private int mStars;
@@ -16,12 +15,11 @@ public class Hotel {
  public Hotel() {
  }
 
- public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, String aearportProche, float evaluation,float price,int stars) {
+ public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, float evaluation,float price,int stars) {
   mNom = nom;
   mAdresse = adresse;
   mPointFort = pointFort;
   mLieuxApprox = lieuxApprox;
-  mAearportProche = aearportProche;
   mEvaluation = evaluation;
   mPrice=price;
   mStars=stars;
@@ -75,13 +73,7 @@ public class Hotel {
   mLieuxApprox = lieuxApprox;
  }
 
- public String getAearportProche() {
-  return mAearportProche;
- }
 
- public void setAearportProche(String aearportProche) {
-  mAearportProche = aearportProche;
- }
 
  public float getEvaluation() {
   return mEvaluation;
@@ -90,6 +82,8 @@ public class Hotel {
  public void setEvaluation(float evaluation) {
   mEvaluation = evaluation;
  }
+
+
 
 
  @Override
