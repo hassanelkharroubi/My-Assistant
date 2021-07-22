@@ -44,6 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@color/white"
                 android:ems="10"
                 android:inputType="number" />
 
@@ -52,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@color/white"
                 android:ems="10"
                 android:inputType="number" />
 
@@ -62,7 +64,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:numStars="5" />
+            android:numStars="5"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,14 +78,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="appliquer" />
+                android:text="appliquer"
+                android:background="@color/red"/>
 
             <Button
                 android:id="@+id/annuler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="annuler" />
+                android:text="annuler"
+                android:background="@color/red"/>
         </LinearLayout>
 
     </LinearLayout>

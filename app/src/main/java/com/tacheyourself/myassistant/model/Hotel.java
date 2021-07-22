@@ -9,13 +9,13 @@ public class Hotel {
  private String mPointFort;
  private String mLieuxApprox;
  private float mEvaluation;
- private float mPrice;
+ private int mPrice;
  private int mStars;
 
  public Hotel() {
  }
 
- public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, float evaluation,float price,int stars) {
+ public Hotel(String nom, String adresse, String pointFort, String lieuxApprox, float evaluation,int price,int stars) {
   mNom = nom;
   mAdresse = adresse;
   mPointFort = pointFort;
@@ -25,11 +25,11 @@ public class Hotel {
   mStars=stars;
  }
 
- public float getPrice() {
-  return mPrice;
+ public int getPrice() {
+  return  mPrice;
  }
 
- public void setPrice(float price) {
+ public void setPrice(int price) {
   mPrice = price;
  }
 

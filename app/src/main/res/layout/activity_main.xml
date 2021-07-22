@@ -20,16 +20,17 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="Transport" />
+            android:background="@drawable/transport" />
 
         <Button
             android:id="@+id/Hotel"
-            android:layout_width="wrap_content"
+            android:layout_width="360dp"
             android:layout_height="100dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+
             android:layout_weight="1"
-            android:text="Hotel" />
+            android:background="@drawable/etablissement" />
     </LinearLayout>
 
     <LinearLayout
@@ -39,12 +40,12 @@
 
         <Button
             android:id="@+id/Restaurant"
-            android:layout_width="wrap_content"
+            android:layout_width="285dp"
             android:layout_height="100dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="Restaurant" />
+            android:background="@drawable/restaurant" />
 
         <Button
             android:id="@+id/Site_touristque"
@@ -52,8 +53,9 @@
             android:layout_height="100dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+
             android:layout_weight="1"
-            android:text="Sites" />
+            android:background="@drawable/site_touristique" />
     </LinearLayout>
 
 </LinearLayout>
