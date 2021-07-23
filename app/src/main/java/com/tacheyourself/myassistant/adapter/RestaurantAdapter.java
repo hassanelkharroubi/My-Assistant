@@ -53,7 +53,7 @@ public class RestaurantAdapter extends ArrayAdapter<Restaurant> {
         rhoraire.setText(rRestaurant.get(position).getHoraire());
         repas.setText(rRestaurant.get(position).getRepas());
         rfonction.setText(rRestaurant.get(position).getFonctionalite());
-        restoEvaluation.setText("Evalution "+ rRestaurant.get(position).getRevaluation());
+        restoEvaluation.setText("Evaluation "+ rRestaurant.get(position).getRevaluation());
 
 
         return convertView;
