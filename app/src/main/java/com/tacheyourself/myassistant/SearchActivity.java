@@ -480,10 +480,13 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         //!remove this statement
         Log.d(TAG,"try to het data");
-        mProgressBar.setVisibility(View.VISIBLE);
 
+
+        new SendRequest(this).getInfo("Hôtel Radisson Blu Marrakech",name);
+        Log.d(TAG,"number of stars and evaluation ");
 
         if(requestCode==code && resultCode==RESULT_OK){
+            mProgressBar.setVisibility(View.VISIBLE);
 
             List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             //get data from our tables
@@ -502,6 +505,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         mProgressBar.setVisibility(View.GONE);
             if(liste.size()>0){
+
+                Log.d(TAG,"number of stars and evaluation "+liste.get(0).getEvaluation()+" stars "+liste.get(0).getStars());
                 mHotelList.addAll(liste);
                 // Log.d(TAG,"taille est " +mHotelList.size()+" "+mHotelList.get(0).toString());
                 adapter.notifyDataSetChanged();

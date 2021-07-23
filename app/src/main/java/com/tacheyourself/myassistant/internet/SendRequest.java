@@ -69,11 +69,16 @@ mContext = context;
                     for (int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject=jsonArray.getJSONObject(i);
 
-                        String name=jsonObject.getString("nom");
-                        String adresse=jsonObject.getString("adresse");
-                        String pointsForts=jsonObject.getString("points_forts");
-                        String lieuxApp=jsonObject.getString("lieux_proximite");
+                        //remove all line break character to avoid much spaces in our text view
+                       // name = name.replace("\n", "").replace("\r", "");
+
+                        String name=jsonObject.getString("nom").replace("\n", " ").replace("\r", " ");
+                        String adresse=jsonObject.getString("adresse").replace("\n", "").replace("\r", "");
+                        String pointsForts=jsonObject.getString("points_forts").replace("\n", " ").replace("\r", " ");
+                        String lieuxApp=jsonObject.getString("lieux_proximite").replace("\n", " ").replace("\r", " ");
                         int prix=jsonObject.getInt("prix");
+
+
 
                         //by default give 2
                         int stars;
@@ -84,6 +89,8 @@ mContext = context;
 
                             String etoile=jsonObject.getString("etoile");
                             String eval=jsonObject.getString("evaluation");
+
+
                             try{
                                 stars=Integer.parseInt(etoile);
                                 evaluation=Float.parseFloat(eval);

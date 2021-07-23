@@ -44,6 +44,7 @@ public class RestaurantAdapter extends ArrayAdapter<Restaurant> {
         TextView rhoraire= convertView.findViewById(R.id.rhoraire);
         TextView repas= convertView.findViewById(R.id.repas);
         TextView rfonction= convertView.findViewById(R.id.rfonction);
+        TextView restoEvaluation= convertView.findViewById(R.id.restoEvaluation);
 
         Log.d(TAG,rRestaurant.get(position).getNom());
         hotelname.setText(rRestaurant.get(position).getNom());
@@ -52,6 +53,7 @@ public class RestaurantAdapter extends ArrayAdapter<Restaurant> {
         rhoraire.setText(rRestaurant.get(position).getHoraire());
         repas.setText(rRestaurant.get(position).getRepas());
         rfonction.setText(rRestaurant.get(position).getFonctionalite());
+        restoEvaluation.setText("Evalution "+ rRestaurant.get(position).getRevaluation());
 
 
         return convertView;
