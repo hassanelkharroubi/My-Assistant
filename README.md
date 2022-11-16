@@ -7,10 +7,11 @@ They search for restaurants, they can refine their search using a voice message.
 They are 4 catergories to search:
 
 <ol>
-<il>Reaturants
-<il> Public Spaces
-<il> Hotels 
-<il>
+<li>Reaturants
+<li> Public Spaces
+<li> Hotels 
+<li> Transporation
+ </ol>
 
 
 
